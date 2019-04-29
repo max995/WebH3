@@ -63,3 +63,4 @@ interactive = True
 
 if interactive:
     hangman('whatever', human, 8, True)
+#We will be using the words occurring in the Brown corpus for training an artificial intelligence guessing algorithm,
