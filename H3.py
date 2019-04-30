@@ -1,4 +1,14 @@
 ###hangman
+import nltk
+from nltk.corpus import brown
+import numpy as np
+
+
+
+
+
+
+
 def hangman(secret_word, guesser, max_mistakes=8, verbose=True, **guesser_args):
     """
         This function plays the hangman game with the provided gusser and returns the number of incorrect guesses.
@@ -58,9 +68,41 @@ def human(mask, guessed, **kwargs):
     """
     print('Enter your guess:')
     return input().lower().strip()
-interactive = True
+interactive = False
 ###If you want to play hangman interactively, please set `interactive` to True. When submitting your solution, set to False so we can automatically run the whole notebook using `Run All`.
 
 if interactive:
     hangman('whatever', human, 8, True)
-#We will be using the words occurring in the Brown corpus for training an artificial intelligence guessing algorithm,
+
+
+np.random.seed(12345)
+
+# word_set stores all the unique word types in the Brown corpus
+word_set = []
+# test_set stores 1000 word types for testing
+test_set = []
+# training_set stores the rest word types for training
+training_set = []
+
+###
+# Your answer BEGINS HERE
+###
+data_raw = brown.paras()
+data1= brown.words(data_raw)###???
+data=[]
+for doc1 in data_raw:
+    doc=[]
+    for para1 in doc1:
+        for word in para1:
+            if word.isalpha():
+                doc.append(word.lower())
+    data.append(doc)
+
+
+###
+# Your answer ENDS HERE
+###
+
+print(len(word_set))
+print(len(test_set))
+print(len(training_set))
