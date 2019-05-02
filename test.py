@@ -1,15 +1,9 @@
 from nltk.corpus import brown
 import numpy as np
 import string
+from collections import defaultdict
+from collections import Counter
 
-g={'f'}
-s = string.ascii_lowercase
-a=[]
-for c in s :
-    if c not in list(g):
-        a.append(c)
+unigram_counts_by_length = defaultdict(Counter)
 
-n=np.random.choice(a,replace=False)
-print(n)
-print(len(g))
-
+print(type(unigram_counts_by_length))

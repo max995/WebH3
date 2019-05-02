@@ -4,7 +4,7 @@ from nltk.corpus import brown
 import numpy as np
 import string
 from collections import Counter
-
+from collections import defaultdict
 
 
 
@@ -24,6 +24,7 @@ def hangman(secret_word, guesser, max_mistakes=8, verbose=True, **guesser_args):
         guesser_args: keyword arguments to pass directly to the guesser function
     """
     secret_word = secret_word.lower()
+    #secret_word=secret_word+"n"
     mask = ['_'] * len(secret_word)
     guessed = set()
     if verbose:
@@ -195,8 +196,61 @@ def unigram_guesser(mask, guessed, unigram_counts=unigram_counts):
     # Your answer ENDS HERE
     ###
 
-hangman(np.random.choice(test_set), unigram_guesser, 10, True)
+#hangman(np.random.choice(test_set), unigram_guesser, 10, True)
 
 result = test_guesser(unigram_guesser)
+print()
+print("Average number of incorrect guesses: ", result)
+
+
+
+# unigram_counts_by_length stores a dictionary, mapping word length to the frequencies of characters of words with that word length
+unigram_counts_by_length = defaultdict(Counter)
+
+###
+# Your answer BEGINS HERE
+###
+for word in training_set:
+    unigram_counts_by_length[len(word)]=unigram_counts_by_length[len(word)]+Counter(word)
+
+
+#print(unigram_counts_by_length)
+
+###
+# Your answer ENDS HERE
+###
+
+lengths = sorted(unigram_counts_by_length.keys())
+max_length = lengths[-1] + 1
+print(lengths)
+print()
+print(unigram_counts_by_length)
+
+
+def unigram_length_guesser(mask, guessed, counts=unigram_counts_by_length):
+    """
+        This function implements a length-based unigram guesser. It returns a guess based on the length-based unigram model.
+    """
+    ###
+    # Your answer BEGINS HERE
+    ###
+    i=len(mask)
+    m=len(guessed)
+    if i in unigram_counts_by_length.keys():
+        c1_dict=unigram_counts_by_length[i]
+        c1_most=c1_dict.most_common(m+1)
+        c1_result=c1_most[-1]
+        return c1_result[0]
+    else:
+        unigram_guesser(mask, guessed, False)
+
+    ###
+    # Your answer ENDS HERE
+    ###
+
+
+hangman(np.random.choice(test_set), unigram_length_guesser, 10, True)
+
+result = test_guesser(unigram_length_guesser)
 print()
 print("Average number of incorrect guesses: ", result)
