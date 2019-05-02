@@ -3,7 +3,7 @@ import nltk
 from nltk.corpus import brown
 import numpy as np
 import string
-
+from collections import Counter
 
 
 
@@ -158,7 +158,6 @@ print("Average number of incorrect guesses: ", result)
 
 
 
-from collections import Counter
 
 # unigram_counts stores the frequencies of characters over all training words
 unigram_counts = Counter()
@@ -166,7 +165,13 @@ unigram_counts = Counter()
 ###
 # Your answer BEGINS HERE
 ###
+c_list=[]
 
+for word in training_set:
+    for c in word :
+        c_list.append(c)
+
+unigram_counts=Counter(c_list)
 
 ###
 # Your answer ENDS HERE
@@ -181,13 +186,16 @@ def unigram_guesser(mask, guessed, unigram_counts=unigram_counts):
     ###
     # Your answer BEGINS HERE
     ###
-
+    i = len(guessed)
+    u_most = unigram_counts.most_common(i + 1)
+    m = u_most[-1]
+    return m[0]
 
     ###
     # Your answer ENDS HERE
     ###
 
-#hangman(np.random.choice(test_set), unigram_guesser, 10, True)
+hangman(np.random.choice(test_set), unigram_guesser, 10, True)
 
 result = test_guesser(unigram_guesser)
 print()

@@ -11,4 +11,5 @@ for c in s :
 
 n=np.random.choice(a,replace=False)
 print(n)
+print(len(g))
 
