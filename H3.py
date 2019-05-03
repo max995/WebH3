@@ -254,3 +254,41 @@ hangman(np.random.choice(test_set), unigram_length_guesser, 10, True)
 result = test_guesser(unigram_length_guesser)
 print()
 print("Average number of incorrect guesses: ", result)
+
+###
+# Your answer BEGINS HERE
+###
+bigram_counts = Counter() # you will want a different data structure to store the bigram
+bigram_counts_list=[]
+for word in training_set:
+    word ="$"+word
+    for i in range(len(word)-1):
+        #print((word[i],word[i+1]))
+        bigram_counts_list.append((word[i],word[i+1]))
+
+bigram_counts=Counter(bigram_counts_list)
+
+###
+# Your answer ENDS HERE
+###
+
+def bigram_guesser(mask, guessed, counts=bigram_counts):  # add extra default arguments if needed
+    """
+        This function implements a bigram guesser. It returns a guess based on the bigram model using linear interpolation.
+    """
+    ###
+    # Your answer BEGINS HERE
+    ###
+    i=len(mask)
+
+
+    ###
+    # Your answer ENDS HERE
+    ###
+
+
+ hangman(np.random.choice(test_set), bigram_guesser, 10, True)
+
+#result = test_guesser(bigram_guesser)
+print()
+print("Average number of incorrect guesses: ", result)
