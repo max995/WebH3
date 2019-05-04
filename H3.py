@@ -266,7 +266,7 @@ for word in training_set:
         #print((word[i],word[i+1]))
         bigram_counts_list.append((word[i],word[i+1]))
 
-bigram_counts=Counter(bigram_counts_list)
+bigram_counts=Counter(bigram_counts_list).most_common(len(bigram_counts_list))
 
 ###
 # Your answer ENDS HERE
@@ -279,7 +279,25 @@ def bigram_guesser(mask, guessed, counts=bigram_counts):  # add extra default ar
     ###
     # Your answer BEGINS HERE
     ###
-    i=len(mask)
+
+    m = ''
+    for i in range(len(mask)-1):
+        if mask[0]=='_':
+            for word_pair in bigram_counts:
+                if word_pair[0][0]=='$' and word_pair[0][1] not in guessed:
+                    m=word_pair[0][1]
+                    break
+        else:
+            j=1
+            for j in range(len(mask)-1):
+                if mask[j]=='_' and mask[j-1]!='_':
+                    for word_pair in bigram_counts:
+                        if word_pair[0][0] == mask[j - 1] and word_pair[0][1] not in guessed:
+                            m = word_pair[0][1]
+                            break
+    return m
+
+
 
 
     ###
@@ -287,8 +305,8 @@ def bigram_guesser(mask, guessed, counts=bigram_counts):  # add extra default ar
     ###
 
 
- hangman(np.random.choice(test_set), bigram_guesser, 10, True)
+hangman(np.random.choice(test_set), bigram_guesser, 10, True)
 
-#result = test_guesser(bigram_guesser)
+result = test_guesser(bigram_guesser)
 print()
 print("Average number of incorrect guesses: ", result)
