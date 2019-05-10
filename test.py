@@ -1,9 +1,20 @@
-from nltk.corpus import brown
-import numpy as np
 import string
-from collections import defaultdict
 from collections import Counter
 
-unigram_counts_by_length = defaultdict(Counter)
+from H3 import unigram_counts
 
-print(type(unigram_counts_by_length))
+bigram_counts = {}  # you will want a different data structure to store the bigram
+bigram_linear={}
+a = list(string.ascii_lowercase)
+
+# for c in a:
+#     print(c)
+#     bigram_counts[c]=Counter()
+#     bigram_linear[c]=Counter()
+print(a)
+bigram_counts['$']=Counter()
+bigram_linear['$']=Counter()
+bi_lambdas=8
+sumall=sum(unigram_counts.values())
+prin
+#print(sumall)

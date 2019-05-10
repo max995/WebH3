@@ -5,7 +5,7 @@ import numpy as np
 import string
 from collections import Counter
 from collections import defaultdict
-
+import math
 
 
 
@@ -255,18 +255,105 @@ result = test_guesser(unigram_length_guesser)
 print()
 print("Average number of incorrect guesses: ", result)
 
+# ###
+# # Your answer BEGINS HERE
+# ###
+# bigram_counts = Counter() # you will want a different data structure to store the bigram
+# bigram_counts_list=[]
+# for word in training_set:
+#     word ="$"+word
+#     for i in range(len(word)-1):
+#         #print((word[i],word[i+1]))
+#         bigram_counts_list.append((word[i],word[i+1]))
+#
+# bigram_counts=Counter(bigram_counts_list).most_common(len(bigram_counts_list))
+#
+# ###
+# # Your answer ENDS HERE
+# ###
+#
+# def bigram_guesser(mask, guessed, counts=bigram_counts):  # add extra default arguments if needed
+#     """
+#         This function implements a bigram guesser. It returns a guess based on the bigram model using linear interpolation.
+#     """
+#     ###
+#     # Your answer BEGINS HERE
+#     ###
+#
+#     m = ''
+#     for i in range(len(mask)-1):
+#         if mask[0]=='_':
+#             for word_pair in bigram_counts:
+#                 if word_pair[0][0]=='$' and word_pair[0][1] not in guessed:
+#                     m=word_pair[0][1]
+#                     break
+#         else:
+#             j=1
+#             for j in range(len(mask)-1):
+#                 if mask[j]=='_' and mask[j-1]!='_':
+#                     for word_pair in bigram_counts:
+#                         if word_pair[0][0] == mask[j - 1] and word_pair[0][1] not in guessed:
+#                             m = word_pair[0][1]
+#                             break
+#     return m
+#
+#
+#
+#
+#     ###
+#     # Your answer ENDS HERE
+#     ###
+#
+#
+# #hangman(np.random.choice(test_set), bigram_guesser, 10, True)
+#
+# result = test_guesser(bigram_guesser)
+# print()
+# print("Average number of incorrect guesses: ", result)
+
 ###
 # Your answer BEGINS HERE
-###
-bigram_counts = Counter() # you will want a different data structure to store the bigram
-bigram_counts_list=[]
-for word in training_set:
-    word ="$"+word
-    for i in range(len(word)-1):
-        #print((word[i],word[i+1]))
-        bigram_counts_list.append((word[i],word[i+1]))
+###bigram_counts = {}  # you will want a different data structure to store the bigram
+bigram_linear={}
+a= list(string.ascii_lowercase)
+for c0 in a:
+    bigram_counts[c0]=Counter()
+    bigram_linear[c0]=Counter()
 
-bigram_counts=Counter(bigram_counts_list).most_common(len(bigram_counts_list))
+bigram_counts['$']=Counter()
+bigram_linear['$']=Counter()
+
+
+bi_lambdas=0.8
+
+sumCounts= math.fsum(unigram_counts.values())
+#print(sumCounts)
+
+
+for c0 in bigram_counts:
+    for c1 in a:
+        bigram_counts[c0][c1]=0
+
+for word1 in training_set:
+    word1=list('$'+word1)
+    for i in range(0,len(word1)-1):
+        bigram_counts[word1[i]][word1[i+1]]+=1
+#print(bigram_counts['$'])
+
+for c3 in bigram_counts:
+    sumAll = math.fsum(bigram_counts[c3].values())
+
+    for c4 in a:
+        p1=0.0
+        p2=0.0
+        p1=(bigram_counts[c3][c4])/(sumAll)
+        p2=(unigram_counts[c4])/(sumCounts)
+        #print(p2)
+        bigram_linear[c3][c4]=bi_lambdas*p1+(1-bi_lambdas)*p2
+bigram_counts=bigram_linear
+for c5 in bigram_counts.keys():
+    bigram_counts[c5]=bigram_counts[c5].most_common()
+print(bigram_counts)
 
 ###
 # Your answer ENDS HERE
@@ -280,32 +367,30 @@ def bigram_guesser(mask, guessed, counts=bigram_counts):  # add extra default ar
     # Your answer BEGINS HERE
     ###
 
-    m = ''
-    for i in range(len(mask)-1):
-        if mask[0]=='_':
-            for word_pair in bigram_counts:
-                if word_pair[0][0]=='$' and word_pair[0][1] not in guessed:
-                    m=word_pair[0][1]
-                    break
-        else:
-            j=1
-            for j in range(len(mask)-1):
-                if mask[j]=='_' and mask[j-1]!='_':
-                    for word_pair in bigram_counts:
-                        if word_pair[0][0] == mask[j - 1] and word_pair[0][1] not in guessed:
-                            m = word_pair[0][1]
-                            break
-    return m
+    local_mask = mask[:]
 
-
-
-
+    local_mask.insert(0, '$')
+    predictor = Counter()
+    for ch in a:
+        predictor[ch] = 0
+    for i in range(0, len(local_mask)):
+        if local_mask[i] == '_':
+            if local_mask[i - 1] != '_':
+                for item in bigram_counts[local_mask[i - 1]]:
+                    if item[0] not in guessed:
+                        predictor[item[0]] += 1
+                        break
+            else:
+                c = unigram_guesser(mask, guessed)
+                if c not in guessed:
+                    predictor[c] += 1
+    return predictor.most_common()[0][0]
     ###
     # Your answer ENDS HERE
     ###
 
 
-hangman(np.random.choice(test_set), bigram_guesser, 10, True)
+# hangman(np.random.choice(test_set), bigram_guesser, 10, True)
 
 result = test_guesser(bigram_guesser)
 print()
